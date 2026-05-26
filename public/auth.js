@@ -1,58 +1,32 @@
-async function handleLogin(e) {
-    e.preventDefault();
+const api='http://localhost:3000';
+const $=x=>document.getElementById(x);
 
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
+async function login(){
+let r=await fetch(api+'/login',{
+method:'POST',headers:{'Content-Type':'application/json'},
+body:JSON.stringify({username:u.value,password:p.value})
+});
 
-    const res = await fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-    });
+r=await r.text();
 
-    const text = await res.text();
-
-    try {
-        const data = JSON.parse(text);
-        if (data && data.username) {
-            sessionStorage.setItem('currentUser', data.username);
-            window.location.href = 'dashboard.html';
-            return false;
-        }
-    } catch (_) {
-        /* not JSON */
-    }
-
-    alert(text || 'Invalid login');
-    return false;
+if(r=='success'){
+sessionStorage.setItem('u',u.value);
+location='dashboard.html';
+}
+else alert('Invalid Login');
 }
 
-async function handleRegister(e) {
-    e.preventDefault();
+async function register(){
+let d={
+fname:fname.value,lname:lname.value,phone:phone.value,
+address:address.value,email:email.value,
+username:username.value,password:password.value
+};
 
-    const data = {
-        fname: document.getElementById('fname').value.trim(),
-        lname: document.getElementById('lname').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        address: document.getElementById('address').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        username: document.getElementById('ruser').value.trim(),
-        password: document.getElementById('rpass').value,
-        cpassword: document.getElementById('cpass').value
-    };
-
-    const res = await fetch('/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    });
-
-    const message = await res.text();
-    alert(message);
-
-    if (message === 'Account Created') {
-        window.location.href = 'index.html';
-    }
-
-    return false;
+let r=await fetch(api+'/register',{
+method:'POST',headers:{'Content-Type':'application/json'},
+body:JSON.stringify(d)
+});
+alert(await r.text());
+location='index.html';
 }

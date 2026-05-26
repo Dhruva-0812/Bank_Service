@@ -1,90 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard — SecureBank</title>
-    <link rel="stylesheet" href="style.css">
+<title>Dashboard</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body onload="load()">
+<div class="box">
+<h1>Dashboard</h1>
+<h2 id="name"></h2>
+<h3 id="bal"></h3>
 
-    <div class="dashboard-layout">
-        <aside class="sidebar">
-            <div class="sidebar-brand">
-                <h2>SecureBank</h2>
-                <span>Online Banking</span>
-            </div>
-            <ul class="nav-menu">
-                <li><button type="button" class="nav-btn active" data-panel="details"><span class="nav-icon">👤</span> Account Details</button></li>
-                <li><button type="button" class="nav-btn" data-panel="transfer"><span class="nav-icon">💰</span> Deposit & Withdraw</button></li>
-                <li><button type="button" class="nav-btn" data-panel="history"><span class="nav-icon">📋</span> Transaction History</button></li>
-            </ul>
-        </aside>
+<input id="amt" placeholder="Amount"><br><br>
+<button onclick="trans('deposit')">Deposit</button>
+<button onclick="trans('withdraw')">Withdraw</button>
 
-        <div class="main-content">
-            <header class="top-bar">
-                <div>
-                    <h1 id="pageTitle">Account Details</h1>
-                    <p class="user-greeting">Welcome back, <strong id="displayUser">—</strong></p>
-                </div>
-                <button type="button" class="btn btn-danger" onclick="logout()">Log Out</button>
-            </header>
-
-            <main class="content-area">
-
-                <section id="panel-details" class="panel active">
-                    <div class="balance-card">
-                        <label>Available Balance</label>
-                        <div class="amount" id="balanceDisplay">₹0.00</div>
-                    </div>
-                    <div class="card">
-                        <h2>Your Profile</h2>
-                        <div class="detail-grid" id="detailsGrid">
-                            <p class="empty-state">Loading account details…</p>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="panel-transfer" class="panel">
-                    <div class="transfer-layout">
-                        <div class="card transfer-form-card">
-                            <h2>Deposit & Withdraw</h2>
-                            <p class="panel-desc">Enter an amount, then choose deposit or withdraw.</p>
-                            <div class="transaction-form">
-                                <div class="form-group">
-                                    <label for="txAmount">Amount (₹)</label>
-                                    <input type="number" id="txAmount" min="1" step="0.01" placeholder="Enter amount">
-                                </div>
-                                <div class="btn-row">
-                                    <button type="button" class="btn btn-deposit" onclick="handleDeposit()">Deposit</button>
-                                    <button type="button" class="btn btn-withdraw" onclick="handleWithdraw()">Withdraw</button>
-                                </div>
-                            </div>
-                        </div>
-                        <aside class="transfer-balance-side">
-                            <div class="balance-card balance-card-side">
-                                <label>Available Balance</label>
-                                <div class="amount" id="transferBalanceDisplay">₹0.00</div>
-                                <p class="balance-hint">Updates after each transaction</p>
-                            </div>
-                        </aside>
-                    </div>
-                </section>
-
-                <section id="panel-history" class="panel">
-                    <div class="card card-wide">
-                        <h2>Transaction History</h2>
-                        <p class="panel-desc">Your last 15 transactions</p>
-                        <div id="historyTableWrap">
-                            <p class="empty-state">Loading transactions…</p>
-                        </div>
-                    </div>
-                </section>
-
-            </main>
-        </div>
-    </div>
-
-    <script src="dashboard.js"></script>
+<h2>Transactions</h2>
+<div id="his"></div>
+</div>
+<script src="dashboard.js"></script>
 </body>
 </html>

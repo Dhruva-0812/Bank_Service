@@ -1,64 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account — SecureBank</title>
-    <link rel="stylesheet" href="style.css">
+<title>Register</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body class="auth-page">
-
-    <div class="auth-card auth-card-register">
-        <div class="brand">
-            <div class="brand-icon">✨</div>
-            <h1>Create Account</h1>
-            <p>Join SecureBank in a few simple steps</p>
-        </div>
-
-        <form id="registerForm" onsubmit="return handleRegister(event)">
-            <div class="register-grid">
-                <div class="form-group">
-                    <label for="fname">First Name</label>
-                    <input type="text" id="fname" placeholder="First name" required>
-                </div>
-                <div class="form-group">
-                    <label for="lname">Last Name</label>
-                    <input type="text" id="lname" placeholder="Last name" required>
-                </div>
-                <div class="form-group full">
-                    <label for="phone">Phone</label>
-                    <input type="tel" id="phone" placeholder="Phone number" required>
-                </div>
-                <div class="form-group full">
-                    <label for="address">Address</label>
-                    <input type="text" id="address" placeholder="Your address" required>
-                </div>
-                <div class="form-group full">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="Email address" required>
-                </div>
-                <div class="form-group full">
-                    <label for="ruser">Username</label>
-                    <input type="text" id="ruser" placeholder="Choose a username" required autocomplete="username">
-                </div>
-                <div class="form-group">
-                    <label for="rpass">Password</label>
-                    <input type="password" id="rpass" placeholder="Password" required autocomplete="new-password">
-                </div>
-                <div class="form-group">
-                    <label for="cpass">Confirm Password</label>
-                    <input type="password" id="cpass" placeholder="Confirm password" required autocomplete="new-password">
-                </div>
-            </div>
-
-            <div class="auth-actions">
-                <button type="submit" class="btn btn-primary">Create Account</button>
-            </div>
-        </form>
-
-        <p class="auth-link">Already have an account? <a href="index.html">Sign in</a></p>
-    </div>
-
-    <script src="auth.js"></script>
+<body>
+<div class="box">
+<h1>Create Account</h1>
+<input id="fname" placeholder="First Name"><br>
+<input id="lname" placeholder="Last Name"><br>
+<input id="phone" placeholder="Phone"><br>
+<input id="address" placeholder="Address"><br>
+<input id="email" placeholder="Email"><br>
+<input id="username" placeholder="Username"><br>
+<input id="password" type="password" placeholder="Password"><br>
+<button onclick="register()">Register</button>
+</div>
+<script src="auth.js"></script>
 </body>
 </html>

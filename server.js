@@ -1,118 +1,49 @@
-const express = require('express');
-const mysql = require('mysql2');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+const express=require('express'),mysql=require('mysql2'),cors=require('cors');
+const app=express();
+app.use(express.json(),cors(),express.static('public'));
 
-const app = express();
-
-app.use(cors());
-app.use(bodyParser.json());
-app.use(express.static('public'));
-
-const db = mysql.createConnection({
-    host:'localhost',
-    user:'root',
-    password:'123456',
-    database:'bankdb'
+const db=mysql.createConnection({
+host:'localhost',user:'root',password:'123456',database:'bankdb'
 });
 
-// Register
-app.post('/register',(req,res)=>{
-    const data = req.body;
+const q=(sql,v=[])=>new Promise((r,j)=>db.query(sql,v,(e,d)=>e?j(e):r(d)));
 
-    if(data.password !== data.cpassword){
-        return res.send('Passwords do not match');
-    }
-
-    db.query(
-        'INSERT INTO users(fname,lname,phone,address,email,username,password) VALUES(?,?,?,?,?,?,?)',
-        [data.fname,data.lname,data.phone,data.address,data.email,data.username,data.password],
-        (err)=>{
-                    if(err) return res.send('Username already exists');
-            res.send('Account Created');
-        }
-    );
+app.post('/register',async(req,res)=>{
+try{
+await q('insert into users(fname,lname,phone,address,email,username,password,balance) values(?,?,?,?,?,?,?,0)',Object.values(req.body));
+res.send('Registered Successfully');
+}catch(e){res.send(e.message)}
 });
 
-// Login
-app.post('/login',(req,res)=>{
-    db.query(
-        'SELECT * FROM users WHERE username=? AND password=?',
-        [req.body.username,req.body.password],
-        (err,result)=>{
-            if(result.length>0)
-                res.send(result[0]);
-            else
-                res.send('Invalid Login');
-        }
-    );
-});
-// Account Details
-app.get('/user/:username',(req,res)=>{
-    db.query(
-        'SELECT fname,lname,phone,address,email,username,balance FROM users WHERE username=?',
-        [req.params.username],
-        (err,result)=>{
-            res.send(result[0]);
-        }
-    );
+app.post('/login',async(req,res)=>{
+const {username,password}=req.body;
+const d=await q('select * from users where username=? and password=?',[username,password]);
+res.send(d.length?'success':'invalid');
 });
 
-// Deposit
-app.post('/deposit',(req,res)=>{
-    const {username,amount} = req.body;
+app.get('/user/:u',async(req,res)=>{
+const d=await q('select * from users where username=?',[req.params.u]);
+res.json(d[0]);
+});
+app.post('/transaction',async(req,res)=>{
+const {username,amount,type}=req.body;
+const d=await q('select balance from users where username=?',[username]);
+let b=d[0].balance;
 
-    db.query(
-        'UPDATE users SET balance = balance + ? WHERE username=?',
-        [amount,username]
-    );
+if(type=='withdraw' && amount>b)
+return res.send('Insufficient Balance');
 
-    db.query(
-        'INSERT INTO transactions(username,type,amount) VALUES(?,?,?)',
-        [username,'Deposit',amount]
-    );
+b=type=='deposit'?b+ +amount:b- +amount;
 
-    res.send('Money Deposited');
+await q('update users set balance=? where username=?',[b,username]);
+await q('insert into transactions(username,type,amount) values(?,?,?)',[username,type,amount]);
+
+res.send('Success');
 });
 
-// Withdraw
-app.post('/withdraw',(req,res)=>{
-    const {username,amount} = req.body;
-
-    db.query(
-        'SELECT balance FROM users WHERE username=?',
-        [username],
-        (err,result)=>{
-            if(result[0].balance < amount){
-                return res.send('Insufficient Balance');
-            }
-
-            db.query(
-                'UPDATE users SET balance = balance - ? WHERE username=?',
-                [amount,username]
-            );
-
-            db.query(
-                'INSERT INTO transactions(username,type,amount) VALUES(?,?,?)',
-                [username,'Withdraw',amount]
-            );
-
-            res.send('Money Withdrawn');
-        }
-    );
+app.get('/transactions/:u',async(req,res)=>{
+const d=await q('select * from transactions where username=? order by id desc limit 15',[req.params.u]);
+res.json(d);
 });
 
-// Transaction History
-app.get('/transactions/:username',(req,res)=>{
-    db.query(
-        'SELECT * FROM transactions WHERE username=? ORDER BY id DESC LIMIT 15',
-        [req.params.username],
-        (err,result)=>{
-            res.send(result);
-        }
-    );
-});
-
-app.listen(3000,()=>{
-    console.log('Server Running');
-});
+app.listen(3000,()=>console.log('Server Running'));
